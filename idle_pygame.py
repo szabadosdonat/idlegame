@@ -4,25 +4,26 @@ import pygame
 button_pressed = False
 screen_width = 360
 screen_heigth = 640
+money = 96  # starting money
+level = 1 # starting level
 
 
 # ToDo: inherit Button and Text from Thing/Object class
 class Text:
-    def __init__(self, value, size, x=None, y=None, bold=False):
+    def __init__(self, value, size, x=None, y=None):
         # x == None --> centered vertically
         # y == None --> centered horizontally
         self.value = value
         self.x = x
         self.y = y
         self.size = size
-        self.bold = bold
+
+    def set_value(self, value):
+        self.value = value
+        self.x = (screen_width / 2) - (pygame.font.Font('freesansbold.ttf', self.size).render(self.value, True, (0, 0, 0)).get_width() / 2)
 
     def draw_text(self):
-        # note: bold switch does seemingly nothing
-        if self.bold:
-            font = pygame.font.Font('freesansbold.ttf', self.size)
-        else:
-            font = pygame.font.SysFont('calibrilight.ttf', self.size)
+        font = pygame.font.Font('freesansbold.ttf', self.size)
         rendered = font.render(self.value, True, (0, 0, 0))
         if self.x is None:
             self.x = (screen_width / 2) - (rendered.get_width() / 2)
@@ -118,19 +119,28 @@ if __name__ == '__main__':
     b13 = Button('Kilépés', x=80, y=470)
     b21 = Button('Fejlesztések', x=20, y=20, width=100, heigth=40, text_size=15)
     b22 = Button('Főmenü', x=240, y=20, width=100, heigth=40, text_size=15)
+    b23 = Button('Kézi gyártás', x=55, y=485, width=250, heigth=100, text_size=35)
     b31 = Button('Vissza', x=240, y=20, width=100, heigth=40, text_size=15)
     b41 = Button('Vissza', x=240, y=20, width=100, heigth=40, text_size=15)
+    b42 = Button('option 1', x=80, y=140)
+    b43 = Button('option 2', x=80, y=250)
+    b44 = Button('option 3', x=80, y=360)
+    b45 = Button('option 4', x=80, y=470)
 
     # text objects
-    t11 = Text('Idle Játék', 60, x=None, y=50, bold=True)
-    t12 = Text('készítette: Szabados Donát', 25, x=None, y=150)
+    t11 = Text('Idle Játék', 60, x=None, y=50)
+    t12 = Text('készítette: Szabados Donát', 20, x=None, y=150)
+    t21 = Text(f'${money}', 80, x=None, y=100)
+    t22 = Text(f'level {level}', 25, x=None, y=30)
+    t31 = Text(f'${money}', 35, x=None, y=25)
 
     # frames
     f1 = Frame('Main Menu', b11, b12, b13, t11, t12)
-    f2 = Frame('Home Screen', b21, b22)
-    f3 = Frame('Upgrades', b31)
-    f4 = Frame('Beállítások', b41)
+    f2 = Frame('Home Screen', b21, b22, b23, t21, t22)
+    f3 = Frame('Upgrades', b31, t31)
+    f4 = Frame('Beállítások', b41, b42, b43, b44, b45)
 
+    # the frame set here shows up on game start, for now it's the main menu
     current_frame = f1
 
     # game loop
@@ -163,6 +173,11 @@ if __name__ == '__main__':
         if b22.draw_button():
             current_frame.hide_frame()
             current_frame = f1
+
+        if b23.draw_button():
+            money += 1
+            t21.set_value(f'${money}')
+            t31.set_value(f'${money}')
 
         if b31.draw_button():
             current_frame.hide_frame()
