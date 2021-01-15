@@ -1,11 +1,19 @@
 import pygame
 
+"""
+update 0.2
+
+"""
+
 # global variables
 button_pressed = False
 screen_width = 360
 screen_heigth = 640
-money = 96  # starting money
-level = 1 # starting level
+money = 0           # starting money
+level = 1           # starting level
+factories = 0       # factories auto-generate money
+product_value = 1   # value of one product
+sold_products = 0   # number of sold products
 
 
 # ToDo: inherit Button and Text from Thing/Object class
@@ -40,7 +48,7 @@ class Button:
         self.width = width
         self.heigth = heigth
         self.text_size = text_size
-        self.active = False     # True if button is on screen, needed for overlapping frames with buttons
+        self.active = False  # True if button is on screen, needed for overlapping frames with buttons
 
     @property
     def get_width(self):
@@ -80,7 +88,7 @@ class Button:
         font = pygame.font.Font('freesansbold.ttf', self.text_size)
         text_img = font.render(self.text, True, colors[3])
         text_len = text_img.get_width()
-        screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + (self.heigth/3)))
+        screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + (self.heigth / 3)))
         return action
 
 
@@ -114,6 +122,7 @@ if __name__ == '__main__':
 
     # buttons
     # ToDo: make button coordinates relative to screen dimensions
+    # ToDo: name buttons properly
     b11 = Button('Játék', x=80, y=250)
     b12 = Button('Beállítások', x=80, y=360)
     b13 = Button('Kilépés', x=80, y=470)
@@ -121,6 +130,16 @@ if __name__ == '__main__':
     b22 = Button('Főmenü', x=240, y=20, width=100, heigth=40, text_size=15)
     b23 = Button('Kézi gyártás', x=55, y=485, width=250, heigth=100, text_size=35)
     b31 = Button('Vissza', x=240, y=20, width=100, heigth=40, text_size=15)
+    b32 = Button('gyár építése', x=20, y=120, width=150, heigth=75, text_size=15)
+    b33 = Button('termék fejlesztése', x=20, y=215, width=150, heigth=75, text_size=15)
+    b34 = Button('Upgrade 3', x=20, y=310, width=150, heigth=75, text_size=15)
+    b35 = Button('Upgrade 4', x=20, y=405, width=150, heigth=75, text_size=15)
+    b36 = Button('Upgrade 5', x=20, y=500, width=150, heigth=75, text_size=15)
+    b37 = Button('Upgrade 6', x=190, y=120, width=150, heigth=75, text_size=15)
+    b38 = Button('Upgrade 7', x=190, y=215, width=150, heigth=75, text_size=15)
+    b39 = Button('Upgrade 8', x=190, y=310, width=150, heigth=75, text_size=15)
+    b310 = Button('Upgrade 9', x=190, y=405, width=150, heigth=75, text_size=15)
+    b311 = Button('Upgrade 10', x=190, y=500, width=150, heigth=75, text_size=15)
     b41 = Button('Vissza', x=240, y=20, width=100, heigth=40, text_size=15)
     b42 = Button('option 1', x=80, y=140)
     b43 = Button('option 2', x=80, y=250)
@@ -132,29 +151,47 @@ if __name__ == '__main__':
     t12 = Text('készítette: Szabados Donát', 20, x=None, y=150)
     t21 = Text(f'${money}', 80, x=None, y=100)
     t22 = Text(f'level {level}', 25, x=None, y=30)
+    t23 = Text(f'termék értéke: {product_value}', 25, x=None, y=220)
+    t24 = Text(f'gyárak száma: {factories}', 25, x=None, y=260)
+    t25 = Text(f'eladott termékek: {sold_products}', 25, x=None, y=300)
     t31 = Text(f'${money}', 35, x=None, y=25)
 
     # frames
     f1 = Frame('Main Menu', b11, b12, b13, t11, t12)
-    f2 = Frame('Home Screen', b21, b22, b23, t21, t22)
-    f3 = Frame('Upgrades', b31, t31)
+    f2 = Frame('Home Screen', b21, b22, b23, t21, t22, t23, t24, t25)
+    f3 = Frame('Upgrades', b31, b32, b33, b34, b35, b36, b37, b38, b39, b310, b311, t31)
     f4 = Frame('Beállítások', b41, b42, b43, b44, b45)
 
     # the frame set here shows up on game start, for now it's the main menu
     current_frame = f1
+
+    # event for factory money generating
+    EVENT_FACTORY = pygame.USEREVENT + 1
 
     # game loop
     running = True
     clock = pygame.time.Clock()
 
     while running:
-
         clock.tick(60)
+
+        # makes money and updates the money displays
+        def make_money(value):
+            global money
+            money += value
+            t21.set_value(f'${money}')
+            t31.set_value(f'${money}')
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == EVENT_FACTORY:
+                sold_products += 1
+                make_money(product_value)
+                t25.set_value(f'eladott termékek: {sold_products}')
 
+        # navigation buttons
         if b11.draw_button():
             current_frame.hide_frame()
             current_frame = f2
@@ -174,11 +211,6 @@ if __name__ == '__main__':
             current_frame.hide_frame()
             current_frame = f1
 
-        if b23.draw_button():
-            money += 1
-            t21.set_value(f'${money}')
-            t31.set_value(f'${money}')
-
         if b31.draw_button():
             current_frame.hide_frame()
             current_frame = f2
@@ -186,6 +218,28 @@ if __name__ == '__main__':
         if b41.draw_button():
             current_frame.hide_frame()
             current_frame = f1
+
+        # kézi gyártás gomb
+        if b23.draw_button():
+            sold_products += 1
+            make_money(product_value)
+            t25.set_value(f'eladott termékek: {sold_products}')
+
+        # upgrade buttons (b32-b311)
+        if b32.draw_button():   # gyár építése
+            factories += 1
+            pygame.time.set_timer(EVENT_FACTORY, 1000 // factories)
+            t23.set_value(f'gyárak száma: {factories}') # have to update both, otherwise they both show the same string until both upgraded
+            t24.set_value(f'termék értéke: {product_value}')
+            t25.set_value(f'eladott termékek: {sold_products}')
+
+        if b33.draw_button():   # termék fejlesztése
+            product_value += 1
+            t23.set_value(f'gyárak száma: {factories}')
+            t24.set_value(f'termék értéke: {product_value}')
+            t25.set_value(f'eladott termékek: {sold_products}')
+            if factories > 0:
+                pygame.time.set_timer(EVENT_FACTORY, 1000 // factories)
 
         current_frame.draw_frame()
 

@@ -1,0 +1,8 @@
+update 0.1
+- options menu
+- money display
+
+update 0.2
+- money generating factories
+- upgradeable product
+- statistics on screen (number of factories, product worth, number of products sold)
