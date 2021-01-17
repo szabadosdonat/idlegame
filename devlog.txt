@@ -6,3 +6,9 @@ update 0.2
 - money generating factories
 - upgradeable product
 - statistics on screen (number of factories, product worth, number of products sold)
+
+update 0.3
+- level up feature and 6 levels added
+- levels represented by box images
+- infoboxes (empty for now) can be set to show up when cursor is hovering over upgrade buttons
+- 1 new upgrade added (+5% factory productivity)
