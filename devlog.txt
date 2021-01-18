@@ -3,12 +3,17 @@ update 0.1
 - money display
 
 update 0.2
-- money generating factories
-- upgradeable product
-- statistics on screen (number of factories, product worth, number of products sold)
+- money generating factories upgrade added
+- improved product quality upgrade added
+- statistics on screen (number of factories, product value, number of products sold)
 
 update 0.3
-- level up feature and 6 levels added
+- level up feature (prestige system) and 6 levels added
 - levels represented by box images
 - infoboxes (empty for now) can be set to show up when cursor is hovering over upgrade buttons
 - 1 new upgrade added (+5% factory productivity)
+
+update 0.4
+- prices and max level of upgrades added
+- 1 new upgrade added (chance to sell a handmade product for much more money than its value)
+- small overall changes (Upgrade class, text positions, infoboxes in fixed point, more organized code, etc.)
